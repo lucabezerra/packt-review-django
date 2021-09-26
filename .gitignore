@@ -1,0 +1,16 @@
+# Django #
+db.sqlite3
+*.log
+*.pyc
+__pycache__
+bin/
+obj/
+!gitkeep.txt
+
+# Media - User Generated Content #
+media/
+
+# Environments #
+.env
+venv_packt/
+venv/
