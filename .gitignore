@@ -13,4 +13,5 @@ media/
 # Environments #
 .env
 venv_packt/
+venv-packt/
 venv/

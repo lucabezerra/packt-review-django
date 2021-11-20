@@ -30,9 +30,6 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-wrp)%xst2zuel++97ft2ow#4%qyt_hi$n*armvkz0)yzxl_=cm'
-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -50,7 +47,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'djmoney',
+
     'becoming_a_django_entdev.chapter_2',
+    'becoming_a_django_entdev.chapter_3',
 ]
 
 MIDDLEWARE = [
@@ -143,3 +143,9 @@ django_heroku.settings(locals())
 
 options = DATABASES['default'].get('OPTIONS', {})
 options.pop('sslmode', None)
+
+# Django Money
+CURRENCIES = ('USD', 'EUR')
+CURRENCY_CHOICES = [('USD', 'USD $'), ('EUR', 'EUR €')]
+
+AUTH_USER_MODEL = 'chapter_3.Seller'

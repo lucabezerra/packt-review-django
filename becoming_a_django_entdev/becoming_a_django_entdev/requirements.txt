@@ -1,11 +1,12 @@
+dj-database-url
 django~=3.2
 django-extensions
 django-heroku
-dj-database-url
+django-money
 gunicorn
 python-dotenv
 pydotplus
 psycopg2
 psycopg2-binary==2.8.6
-whitenoise
 secret-key-generator
+whitenoise
