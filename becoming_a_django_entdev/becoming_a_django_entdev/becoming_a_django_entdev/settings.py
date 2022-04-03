@@ -31,7 +31,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = [
     'packt-review-django.herokuapp.com/',
@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'becoming_a_django_entdev.chapter_2',
     'becoming_a_django_entdev.chapter_3',
     'becoming_a_django_entdev.chapter_4',
+    'becoming_a_django_entdev.chapter_5',
 ]
 
 MIDDLEWARE = [
