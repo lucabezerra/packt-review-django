@@ -1,29 +1,31 @@
+from django.contrib.auth.models import AbstractUser, AbstractBaseUser
+from django.contrib.auth.hashers import make_password
 from django.db import models
+from django.db.models.functions import Lower
 from djmoney.models.fields import MoneyField
 from djmoney.money import Money
 from djmoney.models.validators import MaxMoneyValidator, MinMoneyValidator
-from django.db.models.functions import Lower
-from django.contrib.auth.models import AbstractUser
 
 
 YESNO_CHOICES = (
     (True, 'Yes'),
-    (False, 'No')
+    (False, 'No'),
 )
 
 MAKE_CHOICES = (
+    (0, '------'),
     (1, 'Buick'),
     (2, 'Cadillac'),
     (3, 'Chevrolet'),
+    (4, 'Ford'),
+    (5, 'GMC'),
+    (6, 'Chrysler'),
+    (7, 'Dodge'),
+    (8, 'Jeep'),
+    (9, 'Lincoln'),
+    (10, 'Tesla'),
 )
 
-class BuickVehicleManager(models.Manager):
-    def get_queryset(self):
-        return super().get_queryset().filter(make=1)
-
-class ChevyVehicleManager(models.Manager):
-    def get_queryset(self):
-        return super().get_queryset().filter(make=3)
 
 class Vehicle_Model(models.Model):
     name = models.CharField(
@@ -33,12 +35,26 @@ class Vehicle_Model(models.Model):
         blank = True,
         null = True,
     )
+    make = models.PositiveIntegerField(
+        choices = MAKE_CHOICES,
+        verbose_name = 'Make/Manufacturer',
+        blank = True,
+        null = True,
+    )
+
+    def __str__(self):
+        return self.name
+
+    def natural_key(self):
+        return self.__str__()
 
     class Meta(object):
+        ordering = ['name',]
         verbose_name = 'Vehicle Model'
         verbose_name_plural = 'Vehicle Models'
         indexes = [
             models.Index(fields=['name']),
+            #models.Index(fields=['name', 'make']),
             models.Index(fields=['-name'], name='desc_name_idx'),
             models.Index(Lower('name').desc(), name='lower_name_idx')
         ]
@@ -51,6 +67,69 @@ class Engine(models.Model):
         blank = True,
         null = True,
     )
+    vehicle_model = models.ForeignKey(
+        Vehicle_Model,
+        on_delete = models.CASCADE,
+        verbose_name = 'Model',
+        related_name = 'model_engine',
+        blank = True,
+        null = True,
+    )
+
+    def __str__(self):
+        return self.name
+
+    def natural_key(self):
+        return self.__str__()
+
+    class Meta(object):
+        ordering = ['name',]
+        verbose_name = 'Engine'
+        verbose_name_plural = 'Engines'
+
+
+class engine2(models.Model):
+    name = models.CharField(
+        verbose_name = 'Engine',
+        max_length = 75,
+        blank = True,
+        null = True,
+    )
+    vehicle_model = models.ForeignKey(
+        Vehicle_Model,
+        on_delete = models.CASCADE,
+        verbose_name = 'Model',
+        related_name = 'model_engine2',
+        blank = True,
+        null = True,
+    )
+
+    class Meta(object):
+        abstract = True
+        db_table = 'chapter_3_practice_engine'
+        ordering = ['name',]
+        verbose_name = 'Practice Engine'
+        verbose_name_plural = 'Practice Engines'
+
+
+class engine3(engine2):
+    other_name = models.CharField(
+        verbose_name = 'Other Engine Name',
+        max_length = 75,
+        blank = True,
+        null = True,
+    )
+
+
+class BuickVehicleManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(make=1)
+
+
+class ChevyVehicleManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(make=3)
+
 
 class Vehicle(models.Model):
     vin = models.CharField(
@@ -73,15 +152,25 @@ class Vehicle(models.Model):
         default_currency = 'USD',
         null = True,
         validators = [
+            #MinMoneyValidator(400),
+            #MaxMoneyValidator(400000),
+            #MinMoneyValidator(Money(500, 'EUR')),
+            #MaxMoneyValidator(Money(500000, 'EUR')),
             MinMoneyValidator({'EUR': 500, 'USD': 400}),
             MaxMoneyValidator({'EUR': 500000, 'USD': 400000}),
         ]
+    )
+    make = models.PositiveIntegerField(
+        choices = MAKE_CHOICES,
+        verbose_name = 'Vehicle Make/Brand',
+        blank = True,
+        null = True,
     )
     vehicle_model = models.ForeignKey(
         Vehicle_Model,
         on_delete = models.CASCADE,
         verbose_name = 'Model',
-        related_name = 'vehicle_model',
+        related_name = 'model_vehicle',
         blank = True,
         null = True,
     )
@@ -89,13 +178,7 @@ class Vehicle(models.Model):
         Engine,
         on_delete = models.CASCADE,
         verbose_name = 'Engine',
-        related_name = 'vehicle_engine',
-        blank = True,
-        null = True,
-    )
-    make = models.PositiveIntegerField(
-        choices = MAKE_CHOICES,
-        verbose_name = 'Vehicle Make/Brand',
+        related_name = 'engine_vehicle',
         blank = True,
         null = True,
     )
@@ -104,10 +187,10 @@ class Vehicle(models.Model):
     buick_objects = BuickVehicleManager() # The Buick Specific Manager
     chevy_objects = ChevyVehicleManager() # The Chevy Specific Manager
 
-
     def __str__(self):
         MAKE_CHOICES_DICT = dict(MAKE_CHOICES)
-        return MAKE_CHOICES_DICT[self.make] + ' ' + self.model.name
+
+        return MAKE_CHOICES_DICT[self.make] + ' ' + self.vehicle_model.name
 
     def full_vehicle_name(self):
         return self.__str__() + ' - ' + self.engine.name
@@ -116,48 +199,48 @@ class Vehicle(models.Model):
     def fullname(self):
         return self.__str__() + ' - ' + self.engine.name
 
+    def get_url(self):
+        from django.urls import reverse
+        return reverse('vehicle-detail', kwargs={'id' : self.pk})
+        #return reverse('vehicle-detail', kwargs={'vin' : self.vin})
+
+    def get_absolute_url(self, request):
+        from django.urls import reverse
+        base_url = request.build_absolute_uri('/')[:-1].strip('/')
+        return base_url + reverse('vehicle-detail', kwargs={'id' : self.pk})
+        #return base_url + reverse('vehicle-detail', kwargs={'vin' : self.vin})
+
+    def natural_key(self):
+        return self.full_vehicle_name()
+
+    class Meta(object):
+        ordering = ['sold', 'vin',]
+        verbose_name = 'Vehicle'
+        verbose_name_plural = 'Vehicles'
+
+
 class Seller(AbstractUser):
     name = models.CharField(
-        verbose_name = 'Seller Name',
+        verbose_name = 'Business Name',
         max_length = 150,
         blank = True,
         null = True,
     )
-    vehicle = models.ManyToManyField(
+    vehicles = models.ManyToManyField(
         Vehicle,
         verbose_name = 'Vehicles',
-        related_name = 'vehicles',
-        related_query_name = 'vehicle',
+        related_name = 'vehicle_sellers',
+        related_query_name = 'vehicle_seller',
         blank = True,
     )
 
-class engine2(models.Model):
-    name = models.CharField(
-        verbose_name = 'Engine',
-        max_length = 75,
-        blank = True,
-        null = True,
-    )
-    vehicle_model = models.ForeignKey(
-        Vehicle_Model,
-        on_delete = models.CASCADE,
-        verbose_name = 'Model',
-        related_name = 'engine2_model',
-        blank = True,
-        null = True,
-    )
+    def __str__(self):
+        return self.username
+
+    def natural_key(self):
+        return self.__str__()
 
     class Meta(object):
-        abstract = True
-        db_table = 'chapter_3_practice_engine'
         ordering = ['name',]
-        verbose_name = 'Practice Engine'
-        verbose_name_plural = 'Practice Engines'
-
-class engine3(engine2):
-    other_name = models.CharField(
-        verbose_name = 'Other Engine Name',
-        max_length = 75,
-        blank = True,
-        null = True,
-    )
+        verbose_name = 'Seller'
+        verbose_name_plural = 'Sellers'

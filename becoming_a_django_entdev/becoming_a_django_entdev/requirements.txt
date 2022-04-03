@@ -1,5 +1,5 @@
 dj-database-url
-django~=3.2
+django~=4.0
 django-extensions
 django-heroku
 django-money

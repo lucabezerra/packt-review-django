@@ -31,7 +31,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = [
     'packt-review-django.herokuapp.com/',
@@ -51,6 +51,7 @@ INSTALLED_APPS = [
 
     'becoming_a_django_entdev.chapter_2',
     'becoming_a_django_entdev.chapter_3',
+    'becoming_a_django_entdev.chapter_4',
 ]
 
 MIDDLEWARE = [
@@ -78,6 +79,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'becoming_a_django_entdev.context_processors.global_context',
             ],
         },
     },
@@ -132,6 +134,7 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
+# MEDIA_URL = '/media/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
