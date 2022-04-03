@@ -1,0 +1,26 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta charset="utf-8" />
+        <title>{% block page_title %}My Page Title{% endblock %}</title>
+        {% block head_stylesheets %}{% endblock %}
+        {% block head_scripts %}{% endblock %}
+    </head>
+    <body id="{% block page_id %}{% endblock %}" class="{% block page_class %}base-template-class{% endblock %}" style="text-align: center;">
+        {% block header %}
+            {% include 'chapter_4/headers/header_1.html' %}
+        {% endblock %}
+        {% block site_container %}
+            <div class="site-container">
+                <div class="body-content">
+                    {% block body_content %}
+                    {% endblock %}
+                </div>
+                {% block footer %}
+                    {% include 'chapter_4/footers/footer_1.html' with message='Footer of Document' %}
+                {% endblock %}
+            </div>
+        {% endblock %}
+    </body>
+</html>
