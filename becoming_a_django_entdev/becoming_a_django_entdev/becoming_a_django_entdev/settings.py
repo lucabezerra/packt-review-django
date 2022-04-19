@@ -48,11 +48,13 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'djmoney',
+    'address',
 
     'becoming_a_django_entdev.chapter_2',
     'becoming_a_django_entdev.chapter_3',
     'becoming_a_django_entdev.chapter_4',
     'becoming_a_django_entdev.chapter_5',
+    'becoming_a_django_entdev.chapter_6',
 ]
 
 MIDDLEWARE = [

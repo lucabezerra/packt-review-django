@@ -19,12 +19,13 @@ from django.urls import include, path
 
 
 urlpatterns = [
-    path(
-        '', 
-        include(
-           'becoming_a_django_entdev.chapter_5.urls'
-        )
-    ),
+    # path(
+    #     '', 
+    #     include(
+    #        'becoming_a_django_entdev.chapter_5.urls'
+    #     )
+    # ),
+    path('', include('becoming_a_django_entdev.chapter_6.urls')),
 ]
 
 if settings.DEBUG:
