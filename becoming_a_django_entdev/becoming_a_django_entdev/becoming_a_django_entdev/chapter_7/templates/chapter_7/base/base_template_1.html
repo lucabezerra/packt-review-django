@@ -1,0 +1,21 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta charset="utf-8" />
+        <title>{% block page_title %}My Page Title{% endblock %}</title>
+        {% block head_stylesheets %}{% endblock %}
+        {% block head_scripts %}{% endblock %}
+        <script defer type="text/javascript" src="{{ base_url }}{% static 'chapter_7/js/site-js.js' %}"></script>
+    </head>
+    <body id="{% block page_id %}{% endblock %}" class="{% block page_class %}base-template-class{% endblock %}" style="text-align: center;">
+        {% block site_container %}
+            <div class="site-container">
+                <div class="body-content">
+                    {% block body_content %}
+                    {% endblock %}
+                </div>
+            </div>
+        {% endblock %}
+    </body>
+</html>
