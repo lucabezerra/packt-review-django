@@ -2,12 +2,16 @@ dj-database-url
 django~=4.0
 django-address
 django-extensions
+django-filter
 django-heroku
 django-money
+djangorestframework
 gunicorn
+markdown
 python-dotenv
 pydotplus
 psycopg2
 psycopg2-binary==2.8.6
 secret-key-generator
 whitenoise
+xhtml2pdf
