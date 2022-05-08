@@ -15,6 +15,7 @@ import os
 import django_heroku
 import dj_database_url
 import dotenv
+from django.contrib.messages import constants as messages
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -49,15 +50,22 @@ INSTALLED_APPS = [
 
     'djmoney',
     'address',
+    'rest_framework',
+    'rest_framework.authtoken',
+    'debug_toolbar',
 
     'becoming_a_django_entdev.chapter_2',
     'becoming_a_django_entdev.chapter_3',
     'becoming_a_django_entdev.chapter_4',
     'becoming_a_django_entdev.chapter_5',
     'becoming_a_django_entdev.chapter_6',
+    'becoming_a_django_entdev.chapter_7',
+    'becoming_a_django_entdev.chapter_8',
+    'becoming_a_django_entdev.chapter_9',
 ]
 
 MIDDLEWARE = [
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -67,6 +75,8 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
     'whitenoise.middleware.WhiteNoiseMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
 ]
 
 ROOT_URLCONF = 'becoming_a_django_entdev.urls'
@@ -83,6 +93,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'becoming_a_django_entdev.context_processors.global_context',
+                'django.contrib.messages.context_processors.messages',
             ],
         },
     },
@@ -155,3 +166,46 @@ CURRENCIES = ('USD', 'EUR')
 CURRENCY_CHOICES = [('USD', 'USD $'), ('EUR', 'EUR €')]
 
 AUTH_USER_MODEL = 'chapter_3.Seller'
+
+# MailTrap
+if DEBUG:
+    EMAIL_HOST = os.getenv('EMAIL_HOST')
+    EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+    EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+    EMAIL_PORT = os.getenv('EMAIL_PORT')
+
+MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
+MINOR = 50
+MAJOR = 60
+CRITICAL = 70
+MESSAGE_TAGS = {
+    messages.INFO: 'information',
+    MINOR: 'minor',
+    MAJOR: 'major',
+    CRITICAL: 'critical',
+}
+
+if DEBUG:
+    MESSAGE_LEVEL = messages.DEBUG
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ],
+}
+
+INTERNAL_IPS = [
+    '127.0.0.1',
+]
+
+def show_toolbar(request):
+    return True
+
+if os.getenv('SHOW_TOOLBAR_CALLBACK') == 'True':
+    DEBUG_TOOLBAR_CONFIG = {
+        'SHOW_TOOLBAR_CALLBACK': show_toolbar,
+    }

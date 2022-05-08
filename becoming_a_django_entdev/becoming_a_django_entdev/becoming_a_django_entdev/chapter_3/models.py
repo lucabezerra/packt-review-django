@@ -24,6 +24,7 @@ MAKE_CHOICES = (
     (8, 'Jeep'),
     (9, 'Lincoln'),
     (10, 'Tesla'),
+    (11, 'Gurgel'),
 )
 
 

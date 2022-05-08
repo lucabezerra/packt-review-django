@@ -1,3 +1,5 @@
+import logging
+
 from django.http import Http404, HttpResponseRedirect
 from django.template.response import (
     TemplateResponse
@@ -12,6 +14,10 @@ def practice_view(request, year):
     return TemplateResponse(request, 'chapter_4/my_year.html', {'year': year})
 
 def practice_year_view(request, year):
+    logger = logging.getLogger(__name__)
+    logger.setLevel(logging.INFO)
+    logger.info('The Requested Year Is: %s' % year)
+
     print(
         request.build_absolute_uri(
             reverse('year_url', args=(2023,))

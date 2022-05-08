@@ -1,6 +1,7 @@
 dj-database-url
 django~=4.0
 django-address
+django-debug-toolbar
 django-extensions
 django-filter
 django-heroku

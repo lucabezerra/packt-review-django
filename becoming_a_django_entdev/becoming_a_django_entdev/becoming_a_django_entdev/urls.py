@@ -15,20 +15,33 @@ Including another URLconf
 """
 from django.conf import settings
 from django.conf.urls.static import static
-from django.urls import include, path
+from django.urls import include, path, re_path
 
 
 urlpatterns = [
-    # path(
-    #     '', 
-    #     include(
-    #        'becoming_a_django_entdev.chapter_5.urls'
-    #     )
-    # ),
-    path('', include('becoming_a_django_entdev.chapter_6.urls')),
+    path(
+        '',   
+        include(
+            'becoming_a_django_entdev.chapter_9.urls'
+        )
+    ),
+    path(
+        '',   
+        include(
+            'becoming_a_django_entdev.chapter_8.urls'
+        )
+    ),
 ]
 
 if settings.DEBUG:
+    import debug_toolbar
+    urlpatterns = [
+        re_path(
+            r'^__debug__/', 
+            include(debug_toolbar.urls)
+        ),
+    ] + urlpatterns
+    
     urlpatterns += static(
         settings.STATIC_URL, 
         document_root = settings.STATIC_ROOT
