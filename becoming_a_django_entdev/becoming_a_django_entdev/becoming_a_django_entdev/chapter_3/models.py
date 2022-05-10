@@ -196,6 +196,9 @@ class Vehicle(models.Model):
     def full_vehicle_name(self):
         return self.__str__() + ' - ' + self.engine.name
 
+    def natural_key(self):
+        return self.full_vehicle_name()
+
     @property
     def fullname(self):
         return self.__str__() + ' - ' + self.engine.name

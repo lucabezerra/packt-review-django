@@ -22,13 +22,7 @@ urlpatterns = [
     path(
         '',   
         include(
-            'becoming_a_django_entdev.chapter_9.urls'
-        )
-    ),
-    path(
-        '',   
-        include(
-            'becoming_a_django_entdev.chapter_8.urls'
+            'becoming_a_django_entdev.chapter_10.urls'
         )
     ),
 ]
